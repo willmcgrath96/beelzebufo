@@ -9,11 +9,9 @@ import { useTooltip, useTooltipInPortal, defaultStyles } from "@visx/tooltip";
 import { LegendOrdinal } from "@visx/legend";
 import { extent } from "d3";
 import { AnimatedAxis } from "@visx/xychart";
+import { Text } from "@visx/text";
 
-const purple1 = "#6c5efb";
-const purple2 = "#c998ff";
-const purple3 = "#a44afe";
-const background = "#eaedff";
+const background = "#f1f3f5";
 const defaultMargin = { top: 30, left: 60, right: 40, bottom: 40 };
 const tooltipStyles = {
   ...defaultStyles,
@@ -54,7 +52,7 @@ const ScatterPlot = ({
 
   const worstScale = scaleLinear({
     domain: [0, worstCalc],
-    range: [margin.left, innerWidth + margin.left],
+    range: [margin.left, innerWidth],
   });
 
   const rankScale = scaleLinear({
@@ -93,8 +91,8 @@ const ScatterPlot = ({
           yScale={rankScale}
           width={xMax}
           height={yMax}
-          stroke="black"
-          strokeOpacity={0.1}
+          stroke="white"
+          strokeOpacity={1}
         />
         <Group pointerEvents="none">
           {dataVals.map((key, i) => (
@@ -102,13 +100,6 @@ const ScatterPlot = ({
               <Circle
                 key={i}
                 cx={worstScale(getBest(key))}
-                cy={rankScale(getRank(key))}
-                r={3}
-                fill={colors(getAvg(key))}
-              />
-              <Circle
-                key={i + 1}
-                cx={worstScale(getAvg(key))}
                 cy={rankScale(getRank(key))}
                 r={3}
                 fill={colors(getAvg(key))}
@@ -128,6 +119,23 @@ const ScatterPlot = ({
                 y2={rankScale(getRank(key))}
                 stroke={colors(getAvg(key))}
               />
+              <Circle
+                key={i + 1}
+                cx={worstScale(getAvg(key))}
+                cy={rankScale(getRank(key))}
+                r={3}
+                fill={"#495057"}
+              />
+              <Text
+                x={worstScale(getWorst(key))}
+                y={rankScale(getRank(key))}
+                fontSize={10}
+                dx={6}
+                dy={2}
+                fill={colors(getAvg(key))}
+              >
+                {getName(key)}
+              </Text>
             </>
           ))}
         </Group>
@@ -135,8 +143,22 @@ const ScatterPlot = ({
           top={innerHeight + margin.top}
           scale={worstScale}
           numTicks={5}
+          label="Average Expert Ranking"
+          labelProps={() => ({
+            fontSize: 20,
+            textAnchor: "middle",
+          })}
         />
-        <AxisLeft scale={rankScale} left={margin.left} numTicks={4} />
+        <AxisLeft
+          scale={rankScale}
+          left={margin.left}
+          numTicks={4}
+          label="Expert Consensus Rank"
+          labelProps={() => ({
+            fontSize: 20,
+            textAnchor: "middle",
+          })}
+        />
       </svg>
     </div>
   );

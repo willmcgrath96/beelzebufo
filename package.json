@@ -8,10 +8,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@visx/annotation": "^2.9.0",
     "@visx/grid": "^2.6.0",
     "@visx/legend": "^2.2.2",
     "@visx/responsive": "^2.8.0",
     "@visx/scale": "^2.2.2",
+    "@visx/text": "^2.3.0",
     "@visx/tooltip": "^2.8.0",
     "@visx/visx": "^2.9.0",
     "@visx/xychart": "^2.9.0",

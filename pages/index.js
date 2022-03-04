@@ -4,26 +4,8 @@ import styles from "../styles/Home.module.scss";
 import cheerio from "cheerio";
 import axios from "axios";
 import ScatterPlot from "../components/ScatterPlot";
-import { Grid } from "@visx/grid";
-import { useTooltip, useTooltipInPortal, defaultStyles } from "@visx/tooltip";
-import {
-  AnimatedAxis, // any of these can be non-animated equivalents
-  AnimatedGrid,
-  AnimatedLineSeries,
-  XYChart,
-  Tooltip,
-} from "@visx/xychart";
-import reactSpring from "react-spring";
 
 export default function Home(props) {
-  let avgOfAvg = Object.values(props.result.slice(0, 40)).map((key) => {
-    let initialValue = 0;
-    let arr = [];
-    arr.push(key.avg);
-    let addedArr = arr.reduce((a, b) => a + b, initialValue);
-    return addedArr / 40;
-  });
-
   function roundUpNearest10(num) {
     return Math.ceil(num / 10) * 10;
   }
@@ -45,52 +27,17 @@ export default function Home(props) {
 
   let maxWorstCalc = roundUpNearest10(maxWorst);
 
-  let worstSortArr = [];
-  pushToWorstArr(worstSortArr);
-  worstSortArr.sort((a, b) => a - b);
-
-  let worstArr = [];
-  for (let i = 0; i < worstSortArr.length; i++) {
-    worstArr.push({ worstSort: worstSortArr[i] });
-  }
-
-  let maxRank = Math.max.apply(
-    Math,
-    Object.values(myPlayers).map(function (o) {
-      return o.rank;
-    })
-  );
-
-  function byTen(num) {
-    if (num % 10 === 0) {
-      return num;
-    }
-  }
-
-  const mergedPlayers = worstArr.map((item, i) =>
-    Object.assign({}, item, myPlayers[i])
-  );
-
-  console.log(mergedPlayers);
-
-  const accessors = {
-    rankaccessor: mergedPlayers.rank,
-    nameaccessor: mergedPlayers.name,
-    bestaccessor: mergedPlayers.best,
-    worstaccessor: mergedPlayers.worst,
-  };
-
   return (
     <div className={styles.container}>
       <main className={styles.main}>
         <div className={styles.chartBox}>
           <ScatterPlot
-            width={800}
-            height={600}
+            width={1000}
+            height={800}
             data={myPlayers}
             worstCalc={maxWorstCalc}
           />
-          <div>Last Scraped: {props.lastScraped}</div>
+          <div>Data Last Retrieved At: {props.lastScraped}</div>
         </div>
       </main>
     </div>
@@ -126,10 +73,11 @@ export async function getStaticProps() {
   $(avgSelector).each((i, elem) => {
     result[i].avg = $(elem).text();
   });
-  const lastScraped = new Date().toISOString();
+  const lastScraped = new Date().toLocaleString();
   return {
     props: {
       result,
+      lastScraped,
     },
     revalidate: 10,
   };
