@@ -1,0 +1,19 @@
+.line1 {
+  fill: none;
+  stroke-miterlimit: 30;
+  stroke-dasharray: 500;
+  stroke-dashoffset: 500;
+  -webkit-animation: draw2 1s linear 0s forwards;
+  animation: draw2 1s linear 0s forwards;
+}
+
+@-webkit-keyframes draw2 {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes draw2 {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
