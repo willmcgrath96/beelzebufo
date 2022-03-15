@@ -5,20 +5,20 @@ import { Group } from "@visx/group";
 import { Grid } from "@visx/grid";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { scaleBand, scaleLinear, scaleOrdinal } from "@visx/scale";
-import { useTooltip, useTooltipInPortal, defaultStyles } from "@visx/tooltip";
-import { LegendOrdinal } from "@visx/legend";
+import {
+  Tooltip,
+  useTooltip,
+  useTooltipInPortal,
+  defaultStyles,
+} from "@visx/tooltip";
+import { LegendOrdinal, LegendItem, LegendLabel } from "@visx/legend";
 import { extent } from "d3";
 import { AnimatedAxis } from "@visx/xychart";
 import { Text } from "@visx/text";
+import { localPoint } from "@visx/event";
 
 const background = "#f1f3f5";
-const defaultMargin = { top: 30, left: 60, right: 40, bottom: 40 };
-const tooltipStyles = {
-  ...defaultStyles,
-  minWidth: 60,
-  backgroundColor: "rgba(0,0,0,0.9)",
-  color: "white",
-};
+const defaultMargin = { top: 80, left: 80, right: 80, bottom: 80 };
 
 const ScatterPlot = ({
   width,
@@ -28,21 +28,43 @@ const ScatterPlot = ({
   event = false,
   margin = defaultMargin,
 }) => {
-  const {
-    tooltipOpen,
-    tooltipTop,
-    tooltipLeft,
-    hideTooltip,
-    showTooltip,
-    tooltipData,
-  } = useTooltip();
-
-  const { containerRef, TooltipInPortal } = useTooltipInPortal();
   const getRank = (d) => d.rank;
   const getWorst = (d) => d.worst;
   const getAvg = (d) => d.avg;
   const getBest = (d) => d.best;
   const getName = (d) => d.name;
+
+  const {
+    tooltipData,
+    tooltipLeft,
+    tooltipTop,
+    tooltipOpen,
+    showTooltip,
+    hideTooltip,
+  } = useTooltip({ tooltipData: "Test" });
+
+  const { containerRef, TooltipInPortal } = useTooltipInPortal({
+    detectBounds: true,
+    scroll: true,
+  });
+
+  const handleMouseOver = (event, datum) => {
+    const coords = localPoint(event.target.ownerSVGElement, event);
+    showTooltip({
+      tooltipLeft: coords.x,
+      tooltipTop: coords.y,
+      tooltipData: datum,
+    });
+  };
+
+  const tooltipStyles = {
+    ...defaultStyles,
+    backgroundColor: "rgba(53,71,125,0.8)",
+    color: "white",
+    width: 152,
+    height: 72,
+    padding: 12,
+  };
 
   const xMax = width - margin.left - margin.right;
   const yMax = height - margin.top - margin.bottom;
@@ -60,6 +82,11 @@ const ScatterPlot = ({
     range: [innerHeight + margin.top, margin.top],
   });
 
+  const legendScale = scaleOrdinal({
+    domain: ["S Tier", "A Tier", "B Tier"],
+    range: ["#f03e3e", "#4263eb", "#0ca678"],
+  });
+
   let colors = (value) => {
     if (value < 10) {
       return "#f03e3e";
@@ -70,8 +97,9 @@ const ScatterPlot = ({
     }
   };
 
+  const legendGlyphSize = 15;
+
   let dataVals = Object.values(data);
-  console.log(dataVals.map((key) => worstScale(getBest(key))));
 
   return width < 10 ? null : (
     <div style={{ position: "relative" }}>
@@ -85,12 +113,10 @@ const ScatterPlot = ({
           rx={14}
         />
         <Grid
-          top={margin.top}
-          left={margin.left}
           xScale={worstScale}
           yScale={rankScale}
-          width={xMax}
-          height={yMax}
+          width={width}
+          height={height}
           stroke="white"
           strokeOpacity={1}
         />
@@ -125,6 +151,8 @@ const ScatterPlot = ({
                 cy={rankScale(getRank(key))}
                 r={3}
                 fill={"#495057"}
+                onMouseOver={handleMouseOver}
+                onMouseOut={hideTooltip}
               />
               <Text
                 x={worstScale(getWorst(key))}
@@ -148,6 +176,7 @@ const ScatterPlot = ({
             fontSize: 20,
             textAnchor: "middle",
           })}
+          labelOffset={30}
         />
         <AxisLeft
           scale={rankScale}
@@ -160,6 +189,40 @@ const ScatterPlot = ({
           })}
         />
       </svg>
+      {tooltipOpen && (
+        <TooltipInPortal
+          // set this to random so it correctly updates with parent bounds
+          key={Math.random()}
+          top={tooltipTop}
+          left={tooltipLeft}
+          style={tooltipStyles}
+        >
+          Data value <strong>{tooltipData}</strong>
+        </TooltipInPortal>
+      )}
+      <LegendOrdinal
+        scale={legendScale}
+        labelFormat={(label) => `${label.toUpperCase()}`}
+      >
+        {(labels) => (
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            {labels.map((label, i) => (
+              <LegendItem key={`legend-quantile-${i}`} margin="0 5px">
+                <svg width={legendGlyphSize} height={legendGlyphSize}>
+                  <rect
+                    fill={label.value}
+                    width={legendGlyphSize}
+                    height={legendGlyphSize}
+                  />
+                </svg>
+                <LegendLabel align="left" margin="0 0 0 4px">
+                  {label.text}
+                </LegendLabel>
+              </LegendItem>
+            ))}
+          </div>
+        )}
+      </LegendOrdinal>
     </div>
   );
 };

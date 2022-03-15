@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@visx/annotation": "^2.9.0",
+    "@visx/event": "^2.6.0",
     "@visx/grid": "^2.6.0",
     "@visx/legend": "^2.2.2",
     "@visx/responsive": "^2.8.0",

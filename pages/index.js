@@ -4,8 +4,11 @@ import styles from "../styles/Home.module.scss";
 import cheerio from "cheerio";
 import axios from "axios";
 import ScatterPlot from "../components/ScatterPlot";
+import { useState, useEffect } from "react";
 
 export default function Home(props) {
+  const [players, setPlayers] = useState([]);
+
   function roundUpNearest10(num) {
     return Math.ceil(num / 10) * 10;
   }
@@ -25,6 +28,36 @@ export default function Home(props) {
     })
   );
 
+  const url = "https://data.nba.net/data/10s/prod/v1/2021/players.json";
+
+  console.log(players);
+
+  useEffect(() => {
+    getPlayers();
+  }, []);
+
+  const getPlayers = async () => {
+    try {
+      const resp = await axios.get(url);
+      setPlayers(resp.data.league.standard);
+    } catch (err) {
+      // Handle Error Here
+      console.error(err);
+    }
+  };
+
+  const playerImg = (playerId) =>
+    `https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/${playerId}.png`;
+
+  const playerArr = players.map((key) => {
+    return {
+      firstName: key.firstName,
+      lastName: key.lastName,
+      playerId: key.personId,
+    };
+  });
+  console.log(playerArr);
+
   let maxWorstCalc = roundUpNearest10(maxWorst);
 
   return (
@@ -32,12 +65,17 @@ export default function Home(props) {
       <main className={styles.main}>
         <div className={styles.chartBox}>
           <ScatterPlot
-            width={1000}
+            width={800}
             height={800}
             data={myPlayers}
             worstCalc={maxWorstCalc}
           />
-          <div>Data Last Retrieved At: {props.lastScraped}</div>
+          {/*{playerArr.map((key) => {
+            return (
+              <img src={playerImg(key.playerId)} width={"80"} height={"60"} />
+            );
+          })}*/}
+          ;<div>Data Last Retrieved At: {props.lastScraped}</div>
         </div>
       </main>
     </div>
