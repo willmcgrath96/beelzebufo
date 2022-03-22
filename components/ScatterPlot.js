@@ -5,17 +5,13 @@ import { Group } from "@visx/group";
 import { Grid } from "@visx/grid";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { scaleBand, scaleLinear, scaleOrdinal } from "@visx/scale";
-import {
-  Tooltip,
-  useTooltip,
-  useTooltipInPortal,
-  defaultStyles,
-} from "@visx/tooltip";
+import { useTooltip, useTooltipInPortal, defaultStyles } from "@visx/tooltip";
 import { LegendOrdinal, LegendItem, LegendLabel } from "@visx/legend";
 import { extent } from "d3";
 import { AnimatedAxis } from "@visx/xychart";
 import { Text } from "@visx/text";
 import { localPoint } from "@visx/event";
+import { create } from "lodash";
 
 const background = "#f1f3f5";
 const defaultMargin = { top: 80, left: 80, right: 80, bottom: 80 };
@@ -41,12 +37,9 @@ const ScatterPlot = ({
     tooltipOpen,
     showTooltip,
     hideTooltip,
-  } = useTooltip({ tooltipData: "Test" });
+  } = useTooltip();
 
-  const { containerRef, TooltipInPortal } = useTooltipInPortal({
-    detectBounds: true,
-    scroll: true,
-  });
+  const { containerRef, TooltipInPortal } = useTooltipInPortal();
 
   const handleMouseOver = (event, datum) => {
     const coords = localPoint(event.target.ownerSVGElement, event);
@@ -57,12 +50,27 @@ const ScatterPlot = ({
     });
   };
 
+  function createToolTip(item) {
+    return (
+      <>
+        <h3>{getName(item)}</h3>
+        <p>
+          Avg Rank: {getAvg(item)}
+          <br />
+          Best Rank: {getBest(item)}
+          <br />
+          Worst Rank: {getWorst(item)}
+        </p>
+      </>
+    );
+  }
+
   const tooltipStyles = {
     ...defaultStyles,
     backgroundColor: "rgba(53,71,125,0.8)",
     color: "white",
-    width: 152,
-    height: 72,
+    width: 250,
+    height: 125,
     padding: 12,
   };
 
@@ -100,10 +108,11 @@ const ScatterPlot = ({
   const legendGlyphSize = 15;
 
   let dataVals = Object.values(data);
+  let tooltipTimeout;
 
   return width < 10 ? null : (
-    <div style={{ position: "relative" }}>
-      <svg ref={containerRef} width={width} height={height}>
+    <div ref={containerRef} style={{ position: "relative" }}>
+      <svg width={width} height={height}>
         <rect
           x={0}
           y={0}
@@ -120,7 +129,7 @@ const ScatterPlot = ({
           stroke="white"
           strokeOpacity={1}
         />
-        <Group pointerEvents="none">
+        <Group>
           {dataVals.map((key, i) => (
             <>
               <Circle
@@ -151,8 +160,13 @@ const ScatterPlot = ({
                 cy={rankScale(getRank(key))}
                 r={3}
                 fill={"#495057"}
-                onMouseOver={handleMouseOver}
-                onMouseOut={hideTooltip}
+                onClick={() => {
+                  if (event) alert(`Clicked: ${JSON.stringify(bar)}`);
+                }}
+                onMouseLeave={hideTooltip}
+                onMouseOver={(event) => {
+                  handleMouseOver(event, createToolTip(key));
+                }}
               />
               <Text
                 x={worstScale(getWorst(key))}
@@ -189,17 +203,6 @@ const ScatterPlot = ({
           })}
         />
       </svg>
-      {tooltipOpen && (
-        <TooltipInPortal
-          // set this to random so it correctly updates with parent bounds
-          key={Math.random()}
-          top={tooltipTop}
-          left={tooltipLeft}
-          style={tooltipStyles}
-        >
-          Data value <strong>{tooltipData}</strong>
-        </TooltipInPortal>
-      )}
       <LegendOrdinal
         scale={legendScale}
         labelFormat={(label) => `${label.toUpperCase()}`}
@@ -223,6 +226,16 @@ const ScatterPlot = ({
           </div>
         )}
       </LegendOrdinal>
+      {tooltipOpen && tooltipData && (
+        <TooltipInPortal
+          key={Math.random()}
+          top={tooltipTop}
+          left={tooltipLeft}
+          style={tooltipStyles}
+        >
+          <strong>{tooltipData}</strong>
+        </TooltipInPortal>
+      )}
     </div>
   );
 };
