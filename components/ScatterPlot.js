@@ -20,6 +20,7 @@ const ScatterPlot = ({
   width,
   height,
   data,
+  playerImgs,
   worstCalc,
   event = false,
   margin = defaultMargin,

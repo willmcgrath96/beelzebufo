@@ -1,62 +1,29 @@
-import Head from "next/head";
-import Image from "next/image";
-import styles from "../styles/Home.module.scss";
+import React from "react";
+import styles from "/styles/Home.module.scss";
 import cheerio from "cheerio";
 import axios from "axios";
-import ScatterPlot from "../components/ScatterPlot";
-import { useState, useEffect } from "react";
-import Link from "next/link";
+import ScatterPlot from "../../components/ScatterPlot";
+import Link from "next/dist/client/link";
 
-export default function Home(props) {
-  const [players, setPlayers] = useState([]);
-
+const BaseballDraft = (props) => {
+  let myPlayers = props.result.slice(0, 40);
   function roundUpNearest10(num) {
     return Math.ceil(num / 10) * 10;
   }
-
-  let myPlayers = props.result.slice(0, 40);
-
   let maxWorst = Math.max.apply(
     Math,
     Object.values(myPlayers).map(function (o) {
       return o.worst;
     })
   );
-
-  const url = "https://data.nba.net/data/10s/prod/v1/2021/players.json";
-
-  console.log(players);
-
-  useEffect(() => {
-    getPlayers();
-  }, []);
-
-  const getPlayers = async () => {
-    try {
-      const resp = await axios.get(url);
-      setPlayers(resp.data.league.standard);
-    } catch (err) {
-      // Handle Error Here
-      console.error(err);
-    }
-  };
-
-  const playerArr = players.map((key) => {
-    return {
-      name: key.firstName + key.lastName,
-      playerId: key.personId,
-    };
-  });
-  console.log(playerArr);
-
   let maxWorstCalc = roundUpNearest10(maxWorst);
 
   return (
     <div className={styles.container}>
       <main className={styles.main}>
         <h1 className="title">
-          <Link href="/charts/BaseballDraft">
-            <a>Fantasy Baseball Draft Rankings</a>
+          <Link href="/">
+            <a>Fantasy Basketball ROS Rankings</a>
           </Link>
         </h1>
         <div className={styles.chartBox}>
@@ -65,19 +32,13 @@ export default function Home(props) {
             height={800}
             data={myPlayers}
             worstCalc={maxWorstCalc}
-            playerImgs={playerArr}
           />
-          {/*{playerArr.map((key) => {
-            return (
-              <img src={playerImg(key.playerId)} width={"80"} height={"60"} />
-            );
-          })}*/}
           ;<div>Data Last Retrieved At: {props.lastScraped}</div>
         </div>
       </main>
     </div>
   );
-}
+};
 
 export async function getStaticProps() {
   const nameSelector = "#data > tbody > tr > td.player-label";
@@ -86,7 +47,7 @@ export async function getStaticProps() {
   const worstSelector = "#data > tbody > tr > td:nth-child(4)";
   const avgSelector = "#data > tbody > tr > td:nth-child(5)";
   const { data } = await axios.get(
-    "https://www.fantasypros.com/nba/rankings/ros-overall.php"
+    "https://www.fantasypros.com/mlb/rankings/overall.php"
   );
   const $ = cheerio.load(data);
   let result = [];
@@ -117,3 +78,5 @@ export async function getStaticProps() {
     revalidate: 10,
   };
 }
+
+export default BaseballDraft;
