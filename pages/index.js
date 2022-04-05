@@ -6,6 +6,9 @@ import axios from "axios";
 import ScatterPlot from "../components/ScatterPlot";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Particles from "react-tsparticles";
+import particlesConfig from "../public/config/particlesConfig";
+import BackgroundParticles from "../components/BackgroundParticles";
 
 export default function Home(props) {
   const [players, setPlayers] = useState([]);
@@ -54,6 +57,7 @@ export default function Home(props) {
   return (
     <div className={styles.container}>
       <main className={styles.main}>
+        <BackgroundParticles />
         <h1 className="title">
           <Link href="/charts/BaseballDraft">
             <a>Fantasy Baseball Draft Rankings</a>
