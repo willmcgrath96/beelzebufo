@@ -4,7 +4,6 @@ import cheerio from "cheerio";
 import axios from "axios";
 import ScatterPlot from "../../components/ScatterPlot";
 import Link from "next/dist/client/link";
-import LinkBox from "../../components/LinkBox";
 import BackgroundParticles from "../../components/BackgroundParticles";
 
 const BaseballDraft = (props) => {
