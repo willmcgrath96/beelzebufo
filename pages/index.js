@@ -58,11 +58,13 @@ export default function Home(props) {
     <div className={styles.container}>
       <main className={styles.main}>
         <BackgroundParticles />
-        <h1 className="title">
-          <Link href="/charts/BaseballDraft">
-            <a>Fantasy Baseball Draft Rankings</a>
-          </Link>
-        </h1>
+        <div className={styles.linkBox}>
+          <h1 className="title">
+            <Link href="/charts/BaseballDraft">
+              <a>Fantasy Baseball Draft Rankings</a>
+            </Link>
+          </h1>
+        </div>
         <div className={styles.chartBox}>
           <ScatterPlot
             width={800}
@@ -70,6 +72,7 @@ export default function Home(props) {
             data={myPlayers}
             worstCalc={maxWorstCalc}
             playerImgs={playerArr}
+            title="ROS Basketball Rankings"
           />
           {/*{playerArr.map((key) => {
             return (

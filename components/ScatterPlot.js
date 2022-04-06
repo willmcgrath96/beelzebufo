@@ -20,6 +20,7 @@ const ScatterPlot = ({
   width,
   height,
   data,
+  title,
   playerImgs,
   worstCalc,
   event = false,
@@ -92,17 +93,21 @@ const ScatterPlot = ({
   });
 
   const legendScale = scaleOrdinal({
-    domain: ["S Tier", "A Tier", "B Tier"],
-    range: ["#f03e3e", "#4263eb", "#0ca678"],
+    domain: ["S Tier", "A Tier", "B Tier", "C Tier", "D Tier"],
+    range: ["#ff6b6b", "#91a7ff", "#63e6be", "#ffc078", "#66d9e8"],
   });
 
   let colors = (value) => {
-    if (value < 10) {
-      return "#f03e3e";
-    } else if (value > 10 && value < 30) {
-      return "#4263eb";
+    if (value < 8) {
+      return "#ff6b6b";
+    } else if (value > 8 && value < 16) {
+      return "#91a7ff";
+    } else if (value > 16 && value < 24) {
+      return "#63e6be";
+    } else if (value > 24 && value < 32) {
+      return "#ffc078";
     } else {
-      return "#0ca678";
+      return "#66d9e8";
     }
   };
 
@@ -114,6 +119,7 @@ const ScatterPlot = ({
   return width < 10 ? null : (
     <div ref={containerRef} style={{ position: "relative" }}>
       <svg width={width} height={height}>
+        <Text>{title}</Text>
         <rect
           x={0}
           y={0}

@@ -4,6 +4,8 @@ import cheerio from "cheerio";
 import axios from "axios";
 import ScatterPlot from "../../components/ScatterPlot";
 import Link from "next/dist/client/link";
+import LinkBox from "../../components/LinkBox";
+import BackgroundParticles from "../../components/BackgroundParticles";
 
 const BaseballDraft = (props) => {
   let myPlayers = props.result.slice(0, 40);
@@ -21,11 +23,14 @@ const BaseballDraft = (props) => {
   return (
     <div className={styles.container}>
       <main className={styles.main}>
-        <h1 className="title">
-          <Link href="/">
-            <a>Fantasy Basketball ROS Rankings</a>
-          </Link>
-        </h1>
+        <BackgroundParticles />
+        <div className={styles.linkBox}>
+          <h1 className="title">
+            <Link href="/">
+              <a>Fantasy Basketball ROS Rankings</a>
+            </Link>
+          </h1>
+        </div>
         <div className={styles.chartBox}>
           <ScatterPlot
             width={800}
