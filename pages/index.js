@@ -10,7 +10,6 @@ import Particles from "react-tsparticles";
 import particlesConfig from "../public/config/particlesConfig";
 import BackgroundParticles from "../components/BackgroundParticles";
 import DropdownBox from "../components/DropdownBox";
-import FootballDynasty from "./charts/FootballDynasty";
 
 export default function Home(props) {
   const [players, setPlayers] = useState([]);
