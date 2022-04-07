@@ -41,7 +41,9 @@ const DropdownBox = ({ children, name, style, defaultOpen = false }) => {
           height: isOpen && previous === isOpen ? "auto" : height,
         }}
       >
-        <a.div ref={ref} style={{ y }} children={children} />
+        <a.div ref={ref} style={{ y }}>
+          {children}
+        </a.div>
       </animated.div>
     </div>
   );
