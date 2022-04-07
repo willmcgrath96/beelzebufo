@@ -11,10 +11,22 @@ import { extent } from "d3";
 import { AnimatedAxis } from "@visx/xychart";
 import { Text } from "@visx/text";
 import { localPoint } from "@visx/event";
-import { create } from "lodash";
+import { create, sortedLastIndex } from "lodash";
 
 const background = "#f1f3f5";
 const defaultMargin = { top: 80, left: 80, right: 80, bottom: 80 };
+
+const legendStyles = {
+  display: "flex",
+  minWidth: 230,
+  backgroundColor: "white",
+  color: "#282828",
+  fontSize: 12,
+  position: "absolute",
+  top: 10,
+  left: 5,
+  boxShadow: "2px 2px 5px #ccd3de",
+};
 
 const ScatterPlot = ({
   width,
@@ -210,29 +222,42 @@ const ScatterPlot = ({
           })}
         />
       </svg>
-      <LegendOrdinal
-        scale={legendScale}
-        labelFormat={(label) => `${label.toUpperCase()}`}
+      <div
+        style={{
+          position: "absolute",
+          top: margin.top / 2 + 25,
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+          fontSize: 14,
+          right: margin.right - 350,
+        }}
       >
-        {(labels) => (
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            {labels.map((label, i) => (
-              <LegendItem key={`legend-quantile-${i}`} margin="0 5px">
-                <svg width={legendGlyphSize} height={legendGlyphSize}>
-                  <rect
-                    fill={label.value}
-                    width={legendGlyphSize}
-                    height={legendGlyphSize}
-                  />
-                </svg>
-                <LegendLabel align="left" margin="0 0 0 4px">
-                  {label.text}
-                </LegendLabel>
-              </LegendItem>
-            ))}
-          </div>
-        )}
-      </LegendOrdinal>
+        <LegendOrdinal
+          scale={legendScale}
+          labelFormat={(label) => `${label.toUpperCase()}`}
+          style={legendStyles}
+        >
+          {(labels) => (
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              {labels.map((label, i) => (
+                <LegendItem key={`legend-quantile-${i}`} margin="0 5px">
+                  <svg width={legendGlyphSize} height={legendGlyphSize}>
+                    <rect
+                      fill={label.value}
+                      width={legendGlyphSize}
+                      height={legendGlyphSize}
+                    />
+                  </svg>
+                  <LegendLabel align="left" margin="0 0 0 4px">
+                    {label.text}
+                  </LegendLabel>
+                </LegendItem>
+              ))}
+            </div>
+          )}
+        </LegendOrdinal>
+      </div>
       {tooltipOpen && tooltipData && (
         <TooltipInPortal
           key={Math.random()}

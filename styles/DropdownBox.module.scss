@@ -1,0 +1,30 @@
+.title {
+  vertical-align: middle;
+}
+
+.frame {
+  position: relative;
+  padding: 4px 0px 0px 0px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow-x: hidden;
+  vertical-align: middle;
+  color: #24292e;
+  fill: #24292e;
+}
+
+.content {
+  will-change: transform, opacity, height;
+  margin-left: 6px;
+  padding: 0px 0px 0px 14px;
+  border-left: 1px dashed rgba(255, 255, 255, 0.4);
+  overflow: hidden;
+}
+
+.toggle {
+  width: 10px;
+  height: 10px;
+  margin-right: 10;
+  cursor: "pointer";
+  vertical-align: "middle";
+}

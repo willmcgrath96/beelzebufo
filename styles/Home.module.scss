@@ -2,6 +2,26 @@
   padding: 0 2rem;
 }
 
+.treeContainer {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  overflow: hidden;
+  font-family: ui-monospace, monospace;
+  font-size: 14px;
+  line-height: 21px;
+  --webkit-user-select: none;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  grid-area: linkBox;
+  position: relative;
+  z-index: 1;
+}
+
 .emojiBox {
   height: 400px;
   width: 400px;
@@ -15,22 +35,21 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-}
-
-.linkBox {
-  height: 800px;
-  width: 400px;
-  z-index: 1;
+  grid-area: chart;
+  position: absolute;
 }
 
 .main {
   min-height: 100vh;
   padding: 4rem 0;
   flex: 1;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  grid-template-rows: 20% 80%;
+  grid-template-areas:
+    "header header header"
+    "linkBox chart .";
+  grid-gap: 0.25rem;
 }
 
 .footer {

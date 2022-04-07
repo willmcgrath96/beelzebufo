@@ -5,6 +5,7 @@ import axios from "axios";
 import ScatterPlot from "../../components/ScatterPlot";
 import Link from "next/dist/client/link";
 import BackgroundParticles from "../../components/BackgroundParticles";
+import DropdownBox from "../../components/DropdownBox";
 
 const BaseballDraft = (props) => {
   let myPlayers = props.result.slice(0, 40);
@@ -23,12 +24,28 @@ const BaseballDraft = (props) => {
     <div className={styles.container}>
       <main className={styles.main}>
         <BackgroundParticles />
-        <div className={styles.linkBox}>
-          <h1 className="title">
-            <Link href="/">
-              <a>Fantasy Basketball ROS Rankings</a>
-            </Link>
-          </h1>
+        <div className={styles.treeContainer}>
+          <DropdownBox name="navigation" defaultOpen>
+            <DropdownBox name="basketball" defaultOpen>
+              <DropdownBox name="NBA Rest of Season Rankings" defaultOpen>
+                <Link href="/">
+                  <a>Fantasy Basketball ROS Rankings</a>
+                </Link>
+              </DropdownBox>
+            </DropdownBox>
+            <DropdownBox name="baseball" defaultOpen>
+              <DropdownBox name="MLB Draft Rankings" defaultOpen>
+                <Link href="/charts/BaseballDraft">
+                  <a>Fantasy Baseball Draft Rankings</a>
+                </Link>
+              </DropdownBox>
+              <DropdownBox name="MLB Dynasty Rankings" defaultOpen>
+                <Link href="/charts/BaseballDynasty">
+                  <a>Fantasy Baseball Dynasty Rankings</a>
+                </Link>
+              </DropdownBox>
+            </DropdownBox>
+          </DropdownBox>
         </div>
         <div className={styles.chartBox}>
           <ScatterPlot
