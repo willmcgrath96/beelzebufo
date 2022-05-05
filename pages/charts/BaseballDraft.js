@@ -1,4 +1,5 @@
 import React from "react";
+import Head from "next/head";
 import styles from "/styles/Home.module.scss";
 import cheerio from "cheerio";
 import axios from "axios";
@@ -21,43 +22,60 @@ const BaseballDraft = (props) => {
   let maxWorstCalc = roundUpNearest10(maxWorst);
 
   return (
-    <div className={styles.container}>
-      <main className={styles.main}>
-        <BackgroundParticles />
-        <div className={styles.treeContainer}>
-          <DropdownBox name="navigation" defaultOpen>
-            <DropdownBox name="basketball" defaultOpen>
-              <DropdownBox name="NBA Rest of Season Rankings" defaultOpen>
-                <Link href="/">
-                  <a>Fantasy Basketball ROS Rankings</a>
-                </Link>
+    <>
+      <Head>
+        <title>Beelzebufo</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Noto+Serif+Display&display=swap"
+          rel="stylesheet"
+        />
+      </Head>
+      <div className={styles.container}>
+        <main className={styles.main}>
+          <BackgroundParticles />
+          <div className={styles.header}>
+            <h1 className={styles.headerStyles}>Beelzebufo</h1>
+            <p className={styles.pStyles}>
+              A fantasy data visualization project
+            </p>
+          </div>
+          <div className={styles.treeContainer}>
+            <DropdownBox name="navigation" defaultOpen>
+              <DropdownBox name="basketball" defaultOpen>
+                <DropdownBox name="NBA Rest of Season Rankings" defaultOpen>
+                  <Link href="/">
+                    <a>Fantasy Basketball ROS Rankings</a>
+                  </Link>
+                </DropdownBox>
+              </DropdownBox>
+              <DropdownBox name="baseball" defaultOpen>
+                <DropdownBox name="MLB Draft Rankings" defaultOpen>
+                  <Link href="/charts/BaseballDraft">
+                    <a>Fantasy Baseball Draft Rankings</a>
+                  </Link>
+                </DropdownBox>
+                <DropdownBox name="MLB Dynasty Rankings" defaultOpen>
+                  <Link href="/charts/BaseballDynasty">
+                    <a>Fantasy Baseball Dynasty Rankings</a>
+                  </Link>
+                </DropdownBox>
               </DropdownBox>
             </DropdownBox>
-            <DropdownBox name="baseball" defaultOpen>
-              <DropdownBox name="MLB Draft Rankings" defaultOpen>
-                <Link href="/charts/BaseballDraft">
-                  <a>Fantasy Baseball Draft Rankings</a>
-                </Link>
-              </DropdownBox>
-              <DropdownBox name="MLB Dynasty Rankings" defaultOpen>
-                <Link href="/charts/BaseballDynasty">
-                  <a>Fantasy Baseball Dynasty Rankings</a>
-                </Link>
-              </DropdownBox>
-            </DropdownBox>
-          </DropdownBox>
-        </div>
-        <div className={styles.chartBox}>
-          <ScatterPlot
-            width={800}
-            height={800}
-            data={myPlayers}
-            worstCalc={maxWorstCalc}
-          />
-          ;<div>Data Last Retrieved At: {props.lastScraped}</div>
-        </div>
-      </main>
-    </div>
+          </div>
+          <div className={styles.chartBox}>
+            <ScatterPlot
+              width={800}
+              height={800}
+              data={myPlayers}
+              worstCalc={maxWorstCalc}
+            />
+            ;<div>Data Last Retrieved At: {props.lastScraped}</div>
+          </div>
+        </main>
+      </div>
+    </>
   );
 };
 

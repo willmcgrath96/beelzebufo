@@ -12,6 +12,7 @@ import { AnimatedAxis } from "@visx/xychart";
 import { Text } from "@visx/text";
 import { localPoint } from "@visx/event";
 import { create, sortedLastIndex } from "lodash";
+import { ScaleSVG, ParentSize } from "@visx/responsive";
 
 const background = "#f1f3f5";
 const defaultMargin = { top: 80, left: 80, right: 80, bottom: 80 };
@@ -126,7 +127,6 @@ const ScatterPlot = ({
   const legendGlyphSize = 15;
 
   let dataVals = Object.values(data);
-  let tooltipTimeout;
 
   return width < 10 ? null : (
     <div ref={containerRef} style={{ position: "relative" }}>
